@@ -3,8 +3,8 @@ Daemon will be stopped at the end of the build
 > Task :app:preBuild UP-TO-DATE
 > Task :app:preDebugBuild UP-TO-DATE
 > Task :app:mergeDebugNativeDebugMetadata NO-SOURCE
-> Task :app:checkDebugAarMetadata
 > Task :app:javaPreCompileDebug
+> Task :app:checkDebugAarMetadata
 > Task :app:processDebugNavigationResources
 > Task :app:compileDebugNavigationResources
 > Task :app:generateDebugResValues
@@ -21,34 +21,28 @@ Daemon will be stopped at the end of the build
 > Task :app:compileDebugShaders NO-SOURCE
 > Task :app:generateDebugAssets UP-TO-DATE
 > Task :app:mergeDebugAssets
-> Task :app:processDebugManifestForPackage
-> Task :app:compressDebugAssets
 > Task :app:desugarDebugFileDependencies
+> Task :app:compressDebugAssets
+> Task :app:processDebugManifestForPackage
 > Task :app:processDebugJavaRes NO-SOURCE
 > Task :app:checkDebugDuplicateClasses
 > Task :app:mergeDebugJniLibFolders
 > Task :app:mergeExtDexDebug
 > Task :app:mergeLibDexDebug
-> Task :app:mergeDebugJavaResource
 > Task :app:mergeDebugNativeLibs NO-SOURCE
 > Task :app:stripDebugDebugSymbols NO-SOURCE
+> Task :app:mergeDebugJavaResource
 > Task :app:processDebugResources
 > Task :app:validateSigningDebug
 
-> Task :app:compileDebugJavaWithJavac
-/home/runner/work/Neversoft-Aware/Neversoft-Aware/app/src/main/java/com/neversoft/aware/MainActivity.java:303: error: illegal escape character
-        result.put("urls", matchesArray(text, Pattern.compile("https?://[^\\s\\]\[<>{}\\\"]+", Pattern.CASE_INSENSITIVE), 100));
-                                                                                 ^
-/home/runner/work/Neversoft-Aware/Neversoft-Aware/app/src/main/java/com/neversoft/aware/MainActivity.java:303: error: not a statement
-        result.put("urls", matchesArray(text, Pattern.compile("https?://[^\\s\\]\[<>{}\\\"]+", Pattern.CASE_INSENSITIVE), 100));
-                                                                                                      ^
-/home/runner/work/Neversoft-Aware/Neversoft-Aware/app/src/main/java/com/neversoft/aware/MainActivity.java:303: error: ';' expected
-        result.put("urls", matchesArray(text, Pattern.compile("https?://[^\\s\\]\[<>{}\\\"]+", Pattern.CASE_INSENSITIVE), 100));
-                                                                                                                       ^
-3 errors
-
 > Task :app:compileDebugJavaWithJavac FAILED
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/gradle_build-1785531830278.json
+/home/runner/work/Neversoft-Aware/Neversoft-Aware/app/src/main/java/com/neversoft/aware/MainActivity.java:437: error: unreported exception JSONException; must be caught or declared to be thrown
+            writeText(info, data.toString(2));
+                                         ^
+Note: /home/runner/work/Neversoft-Aware/Neversoft-Aware/app/src/main/java/com/neversoft/aware/MainActivity.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+1 error
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/gradle_build-1785532013734.json
 
 [Incubating] Problems report is available at: file:///home/runner/work/Neversoft-Aware/Neversoft-Aware/build/reports/problems/problems-report.html
 
@@ -57,16 +51,12 @@ FAILURE: Build failed with an exception.
 * What went wrong:
 Execution failed for task ':app:compileDebugJavaWithJavac'.
 > Compilation failed; see the compiler output below.
-  /home/runner/work/Neversoft-Aware/Neversoft-Aware/app/src/main/java/com/neversoft/aware/MainActivity.java:303: error: illegal escape character
-          result.put("urls", matchesArray(text, Pattern.compile("https?://[^\\s\\]\[<>{}\\\"]+", Pattern.CASE_INSENSITIVE), 100));
-                                                                                   ^
-  /home/runner/work/Neversoft-Aware/Neversoft-Aware/app/src/main/java/com/neversoft/aware/MainActivity.java:303: error: not a statement
-          result.put("urls", matchesArray(text, Pattern.compile("https?://[^\\s\\]\[<>{}\\\"]+", Pattern.CASE_INSENSITIVE), 100));
-                                                                                                        ^
-  /home/runner/work/Neversoft-Aware/Neversoft-Aware/app/src/main/java/com/neversoft/aware/MainActivity.java:303: error: ';' expected
-          result.put("urls", matchesArray(text, Pattern.compile("https?://[^\\s\\]\[<>{}\\\"]+", Pattern.CASE_INSENSITIVE), 100));
-                                                                                                                         ^
-  3 errors
+  /home/runner/work/Neversoft-Aware/Neversoft-Aware/app/src/main/java/com/neversoft/aware/MainActivity.java:437: error: unreported exception JSONException; must be caught or declared to be thrown
+              writeText(info, data.toString(2));
+                                           ^
+  Note: /home/runner/work/Neversoft-Aware/Neversoft-Aware/app/src/main/java/com/neversoft/aware/MainActivity.java uses or overrides a deprecated API.
+  Note: Recompile with -Xlint:deprecation for details.
+  1 error
 
 * Try:
 > Check your code and dependencies to fix the compilation error(s)
@@ -107,16 +97,12 @@ org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':app:com
 	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
 	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:48)
 Caused by: org.gradle.api.internal.tasks.compile.CompilationFailedException: Compilation failed; see the compiler output below.
-/home/runner/work/Neversoft-Aware/Neversoft-Aware/app/src/main/java/com/neversoft/aware/MainActivity.java:303: error: illegal escape character
-        result.put("urls", matchesArray(text, Pattern.compile("https?://[^\\s\\]\[<>{}\\\"]+", Pattern.CASE_INSENSITIVE), 100));
-                                                                                 ^
-/home/runner/work/Neversoft-Aware/Neversoft-Aware/app/src/main/java/com/neversoft/aware/MainActivity.java:303: error: not a statement
-        result.put("urls", matchesArray(text, Pattern.compile("https?://[^\\s\\]\[<>{}\\\"]+", Pattern.CASE_INSENSITIVE), 100));
-                                                                                                      ^
-/home/runner/work/Neversoft-Aware/Neversoft-Aware/app/src/main/java/com/neversoft/aware/MainActivity.java:303: error: ';' expected
-        result.put("urls", matchesArray(text, Pattern.compile("https?://[^\\s\\]\[<>{}\\\"]+", Pattern.CASE_INSENSITIVE), 100));
-                                                                                                                       ^
-3 errors
+/home/runner/work/Neversoft-Aware/Neversoft-Aware/app/src/main/java/com/neversoft/aware/MainActivity.java:437: error: unreported exception JSONException; must be caught or declared to be thrown
+            writeText(info, data.toString(2));
+                                         ^
+Note: /home/runner/work/Neversoft-Aware/Neversoft-Aware/app/src/main/java/com/neversoft/aware/MainActivity.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+1 error
 	at org.gradle.api.internal.tasks.compile.JdkJavaCompiler.execute(JdkJavaCompiler.java:89)
 	at org.gradle.api.internal.tasks.compile.JdkJavaCompiler.execute(JdkJavaCompiler.java:50)
 	at org.gradle.api.internal.tasks.compile.NormalizingJavaCompiler.delegateAndHandleErrors(NormalizingJavaCompiler.java:98)
