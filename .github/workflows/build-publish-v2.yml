@@ -1,0 +1,116 @@
+name: Build Publish and Verify APK
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: neversoft-aware-release-v2
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Materialize encoded sources
+        run: bash scripts/materialize.sh
+
+      - name: Validate installer and CLI
+        run: |
+          base64 -d encoded/ns_py.b64 > /tmp/ns.py
+          python -m py_compile /tmp/ns.py
+          base64 -d encoded/install_payload_v2.b64 > /tmp/install.sh
+          bash -n /tmp/install.sh
+          bash -n termux/install.sh
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android SDK platform
+        run: sdkmanager "platforms;android-36" "build-tools;35.0.0"
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.13'
+
+      - name: Build APK and capture output
+        id: gradle_build
+        shell: bash
+        run: |
+          set +e
+          gradle --no-daemon --stacktrace assembleDebug 2>&1 | tee build.log
+          code=${PIPESTATUS[0]}
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Publish build failure log
+        if: steps.gradle_build.outputs.code != '0'
+        shell: bash
+        run: |
+          mkdir -p dist
+          cp build.log dist/build-failure.log
+          printf '{"status":"failed","source_commit":"%s","built_at":"%s"}\n' "$GITHUB_SHA" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > dist/build-info.json
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -f dist/build-failure.log dist/build-info.json
+          git commit -m "Record APK build failure [skip ci]"
+          git push origin HEAD:main
+          exit 1
+
+      - name: Prepare verified APK
+        if: steps.gradle_build.outputs.code == '0'
+        shell: bash
+        run: |
+          mkdir -p dist
+          cp app/build/outputs/apk/debug/app-debug.apk dist/NeverSoft-Aware.apk
+          sha256sum dist/NeverSoft-Aware.apk | sed 's#dist/##' > dist/NeverSoft-Aware.apk.sha256
+          size=$(stat -c%s dist/NeverSoft-Aware.apk)
+          digest=$(sha256sum dist/NeverSoft-Aware.apk | awk '{print $1}')
+          printf '{"status":"success","source_commit":"%s","built_at":"%s","apk":"NeverSoft-Aware.apk","size_bytes":%s,"sha256":"%s"}\n' "$GITHUB_SHA" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$size" "$digest" > dist/build-info.json
+
+      - name: Commit verified APK to repository
+        if: steps.gradle_build.outputs.code == '0'
+        shell: bash
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -f dist/NeverSoft-Aware.apk dist/NeverSoft-Aware.apk.sha256 dist/build-info.json
+          git commit -m "Publish verified NeverSoft Aware APK [skip ci]"
+          git push origin HEAD:main
+
+      - name: Upload workflow artifact
+        if: steps.gradle_build.outputs.code == '0'
+        uses: actions/upload-artifact@v4
+        with:
+          name: NeverSoft-Aware-APK
+          path: |
+            dist/NeverSoft-Aware.apk
+            dist/NeverSoft-Aware.apk.sha256
+            dist/build-info.json
+
+      - name: Publish rolling GitHub release
+        if: steps.gradle_build.outputs.code == '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete latest --yes --cleanup-tag || true
+          gh release create latest dist/NeverSoft-Aware.apk dist/NeverSoft-Aware.apk.sha256 dist/build-info.json \
+            --target "$GITHUB_SHA" \
+            --title "NeverSoft Aware — Latest APK" \
+            --notes "Installable Android APK built and SHA-256 verified from main." \
+            --latest
