@@ -1,1 +1,1 @@
-{"status":"failed","source_commit":"44a6cb662451ef0ef29fe7624aa9da529aad7b5f","built_at":"2026-07-31T21:07:05Z"}
+{"status":"success","source_commit":"39dcbe248626666ad576545c370d89120d84ac79","built_at":"2026-07-31T21:09:20Z","apk":"NeverSoft-Aware.apk","size_bytes":38452,"sha256":"d82d4f5b67996e64d1dd86b85a57c5c0c8e8dc609f1dc66832eaffe9d5b0d263"}
