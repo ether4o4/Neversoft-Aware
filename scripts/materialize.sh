@@ -39,6 +39,11 @@ source = source.replace(
 ''',
 '''            result.put("termuxPermission", checkSelfPermission(termuxPackage + ".permission.RUN_COMMAND") == PackageManager.PERMISSION_GRANTED);
 ''')
+lines = source.splitlines()
+for index, line in enumerate(lines):
+    if 'result.put("urls"' in line:
+        lines[index] = '        result.put("urls", matchesArray(text, Pattern.compile("https?://\\\\S+", Pattern.CASE_INSENSITIVE), 100));'
+source = '\n'.join(lines) + '\n'
 java.write_text(source)
 
 manifest = Path('app/src/main/AndroidManifest.xml')
