@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+  <meta name="theme-color" content="#0d1014">
+  <title>NeverSoft Aware</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <div class="eyebrow">NEVERSOFT</div>
+      <h1>Aware</h1>
+    </div>
+    <div id="statusPill" class="pill">Loading</div>
+  </header>
+
+  <main>
+    <section id="dashboard" class="page active">
+      <div class="hero panel">
+        <div>
+          <div class="eyebrow">LOCAL INVESTIGATION WORKSPACE</div>
+          <h2>One place for cases, evidence, Termux tools, and local AI.</h2>
+          <p id="workspacePath" class="muted mono"></p>
+        </div>
+        <button class="primary" onclick="installToolkit()">Install / Update CLI</button>
+      </div>
+
+      <div class="stats">
+        <article class="stat panel"><span>Cases</span><strong id="caseCount">0</strong></article>
+        <article class="stat panel"><span>Workspace</span><strong id="workspaceSize">0 B</strong></article>
+        <article class="stat panel"><span>Free</span><strong id="freeSpace">0 B</strong></article>
+        <article class="stat panel"><span>Termux</span><strong id="termuxState">Unknown</strong></article>
+      </div>
+
+      <div class="panel">
+        <h3>Quick actions</h3>
+        <div class="buttonGrid">
+          <button onclick="showPage('cases')">New case</button>
+          <button onclick="Native.pickAnalyzeFile()">Analyze file</button>
+          <button onclick="runDoctor()">Run doctor</button>
+          <button onclick="Native.openTermux()">Open Termux</button>
+          <button onclick="runStatus()">CLI status</button>
+          <button onclick="showPage('network')">Domain report</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3>Activity</h3>
+        <pre id="activityLog">Ready.</pre>
+      </div>
+    </section>
+
+    <section id="cases" class="page">
+      <div class="sectionTitle"><div><div class="eyebrow">WORKSPACE</div><h2>Cases</h2></div></div>
+      <div class="panel formPanel">
+        <label>New case name</label>
+        <div class="row"><input id="newCaseName" placeholder="account_recovery_2026"><button class="primary" onclick="createCase()">Create</button></div>
+      </div>
+      <div class="panel">
+        <div class="row spread"><h3>Case list</h3><button class="small" onclick="loadCases()">Refresh</button></div>
+        <div id="caseList" class="caseList"></div>
+      </div>
+      <div id="caseWorkbench" class="panel hidden">
+        <div class="row spread"><div><div class="eyebrow">ACTIVE CASE</div><h3 id="activeCaseTitle"></h3></div><span id="activeCaseMeta" class="muted"></span></div>
+        <div class="buttonGrid">
+          <button class="primary" onclick="importEvidence()">Import evidence</button>
+          <button onclick="runCaseSummary()">Termux summary</button>
+          <button onclick="runCaseHash()">Hash evidence</button>
+          <button onclick="copyCasePath()">Copy path</button>
+        </div>
+        <label>Case note</label>
+        <textarea id="caseNote" rows="4" placeholder="Write a timestamped note"></textarea>
+        <button onclick="saveNote()">Save note</button>
+        <pre id="caseOutput">Select an action.</pre>
+      </div>
+    </section>
+
+    <section id="analyze" class="page">
+      <div class="sectionTitle"><div><div class="eyebrow">LOCAL PROCESSING</div><h2>Analyze</h2></div></div>
+      <div class="panel">
+        <h3>File analyzer</h3>
+        <p class="muted">Hashes files and profiles CSV, JSON, text, images, audio, and video locally.</p>
+        <button class="primary" onclick="Native.pickAnalyzeFile()">Choose file</button>
+      </div>
+      <div class="panel">
+        <h3>Text extraction</h3>
+        <textarea id="textInput" rows="10" placeholder="Paste logs, exports, messages, or mixed text"></textarea>
+        <div class="row"><button onclick="analyzeText()">Analyze text</button><button onclick="clearAnalysis()">Clear</button></div>
+      </div>
+      <div class="panel">
+        <div class="row spread"><h3>Results</h3><div><button class="small" onclick="copyOutput('analysisOutput')">Copy</button><button class="small" onclick="saveOutput('analysisOutput','NeverSoft_Analysis.txt')">Save</button></div></div>
+        <pre id="analysisOutput">No analysis yet.</pre>
+      </div>
+    </section>
+
+    <section id="network" class="page">
+      <div class="sectionTitle"><div><div class="eyebrow">DOMAIN AND DNS</div><h2>Network</h2></div></div>
+      <div class="panel formPanel">
+        <label>Domain</label>
+        <input id="domainInput" placeholder="example.com" inputmode="url">
+        <div class="row"><button class="primary" onclick="resolveDomain()">Resolve</button><button onclick="runDomainReport()">Run full Termux report</button></div>
+      </div>
+      <div class="panel">
+        <div class="row spread"><h3>Result</h3><button class="small" onclick="copyOutput('domainOutput')">Copy</button></div>
+        <pre id="domainOutput">Enter a domain.</pre>
+      </div>
+    </section>
+
+    <section id="ai" class="page">
+      <div class="sectionTitle"><div><div class="eyebrow">LOCAL MODEL</div><h2>AI analysis</h2></div></div>
+      <div class="panel">
+        <div class="row spread"><div><h3 id="aiModelLabel">Model</h3><p id="aiEndpointLabel" class="muted mono"></p></div><button class="small" onclick="showPage('settings')">Settings</button></div>
+        <textarea id="aiPrompt" rows="12" placeholder="Paste a report or ask the local model to analyze evidence patterns. Do not include data you are not authorized to process."></textarea>
+        <button class="primary" onclick="askAi()">Analyze with Ollama</button>
+      </div>
+      <div class="panel">
+        <div class="row spread"><h3>Response</h3><div><button class="small" onclick="copyOutput('aiOutput')">Copy</button><button class="small" onclick="saveOutput('aiOutput','NeverSoft_AI_Report.txt')">Save</button></div></div>
+        <pre id="aiOutput">No response yet.</pre>
+      </div>
+    </section>
+
+    <section id="settings" class="page">
+      <div class="sectionTitle"><div><div class="eyebrow">CONFIGURATION</div><h2>Settings</h2></div></div>
+      <div class="panel formPanel">
+        <label>Ollama endpoint</label>
+        <input id="endpointInput" placeholder="http://127.0.0.1:11434">
+        <label>Default model</label>
+        <input id="modelInput" placeholder="qwen3:4b">
+        <label>Termux package</label>
+        <input id="termuxPackageInput" placeholder="com.termux">
+        <label>RUN_COMMAND action</label>
+        <input id="termuxActionInput" placeholder="com.termux.RUN_COMMAND">
+        <button class="primary" onclick="saveSettings()">Save settings</button>
+      </div>
+      <div class="panel">
+        <h3>CLI installer</h3>
+        <pre id="installCommand"></pre>
+        <div class="row"><button onclick="copyInstallCommand()">Copy command</button><button class="primary" onclick="installToolkit()">Run in Termux</button></div>
+      </div>
+      <div class="panel">
+        <h3>Termux permission</h3>
+        <p class="muted">The app requests only the Termux RUN_COMMAND permission. Termux must also have <span class="mono">allow-external-apps=true</span> in <span class="mono">~/.termux/termux.properties</span>.</p>
+        <button onclick="runPermissionSetup()">Open setup command in Termux</button>
+      </div>
+    </section>
+  </main>
+
+  <nav class="bottomNav">
+    <button data-page="dashboard" class="active" onclick="showPage('dashboard')">Home</button>
+    <button data-page="cases" onclick="showPage('cases')">Cases</button>
+    <button data-page="analyze" onclick="showPage('analyze')">Analyze</button>
+    <button data-page="network" onclick="showPage('network')">Network</button>
+    <button data-page="ai" onclick="showPage('ai')">AI</button>
+    <button data-page="settings" onclick="showPage('settings')">Settings</button>
+  </nav>
+
+  <script src="app.js"></script>
+</body>
+</html>
