@@ -14,6 +14,7 @@ concurrency:
 
 jobs:
   build:
+    if: ${{ !startsWith(github.ref_name, 'polish/') && !startsWith(github.head_ref, 'polish/') }}
     runs-on: ubuntu-latest
     timeout-minutes: 35
     steps:
