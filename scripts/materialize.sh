@@ -3,7 +3,9 @@ set -euo pipefail
 
 mkdir -p app/src/main/assets app/src/main/java/com/neversoft/aware
 base64 -d encoded/app_js.b64 > app/src/main/assets/app.js
-cat encoded/MainActivity.part*.b64 | base64 -d > app/src/main/java/com/neversoft/aware/MainActivity.java
+for part in encoded/MainActivity.part*.b64; do
+  base64 -d "$part"
+done > app/src/main/java/com/neversoft/aware/MainActivity.java
 
 python - <<'PY'
 from pathlib import Path

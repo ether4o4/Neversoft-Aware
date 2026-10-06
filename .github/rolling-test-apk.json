@@ -1,0 +1,9 @@
+{
+  "seed_run": 37360862344,
+  "seed_sha": "cb0a89d32ec8fba1fe4240257a3fc1ba5f32c49e",
+  "seed_apk_sha": "c28f36fbde625a35e8023b55bc8bb8e8155946ce1001460b6e959983fa1c8311",
+  "main_path": ".github/workflows/build-publish-v2.yml",
+  "main_artifact": "NeverSoft-Aware-APK",
+  "selector": "\\.apk$",
+  "asset_prefix": "Neversoft-Aware-test"
+}
